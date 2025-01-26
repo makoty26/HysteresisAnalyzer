@@ -112,6 +112,5 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
 ## 注意点
 - Google Drive 内の `CSV_DIR` に正しくCSVファイルを配置してください。
-- `ELM_NO_MAX` の設定を、使用するデータセットに合わせて適宜変更してください。
 
 ---
