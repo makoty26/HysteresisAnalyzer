@@ -37,12 +37,12 @@ import tempfile
 
 ### 2. 設定値の指定
 ```python
-CSV_DIR = "/content/drive/MyDrive/topologic/受領資料/241011-3/A1/"  # CSVファイルがあるディレクトリ
+CSV_DIR = "/path/to/csv_data/"  # CSVファイルがあるディレクトリ
 X_COLUMN = "H(kOe)"  # x軸に使うカラム名
 Y_COLUMN1 = "Rh(Ω)"  # y軸に使うカラム名
 Y_COLUMN2 = "dRh/dH(mΩ/Oe)"  # y軸に使うカラム名
 FIGSIZE = (8, 8)  # 画像のサイズ
-SAVE_PATH = f"/content/drive/MyDrive/topologic/work/hasesho/A1_output2.html"  # 画像を保存するパス
+SAVE_PATH = f"/path/to/output/output.html"  # 画像を保存するパス
 
 CHARTS_PER_IMAGE = 9  # 1枚の画像に表示するチャートの数（変更不要）
 ELM_NO_MAX = 900  # ELM番号の最大値（変更不要）
