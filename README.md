@@ -113,9 +113,5 @@ with tempfile.TemporaryDirectory() as tmpdir:
 ## 注意点
 - Google Drive 内の `CSV_DIR` に正しくCSVファイルを配置してください。
 - `ELM_NO_MAX` の設定を、使用するデータセットに合わせて適宜変更してください。
-- メモリ節約のため、`plt.close(fig)` や `gc.collect()` を適切に使用しています。
 
 ---
-
-## ライセンス
-本プロジェクトはMITライセンスのもとで提供されます。
