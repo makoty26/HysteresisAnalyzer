@@ -64,7 +64,8 @@ def process_csv(file_path: str) -> Optional[Tuple[Dict[str, float], pd.DataFrame
     data_df = data_df.dropna()
 
     # H(kOe)カラムの追加
-    data_df.loc[:, "H(kOe)"] = data_df["H(Oe)"] / 1000
+    data_df = data_df.copy()  # SettingWithCopyWarning対策でDataFrame のスライスを新しい DataFrame にする
+    data_df["H(kOe)"] = data_df["H(Oe)"] / 1000
 
     # [*Clip]という文字列がカラム内にあれば削除
     data_df.columns = data_df.columns.str.replace(r"\[.*\]", "", regex=True)
