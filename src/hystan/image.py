@@ -147,7 +147,7 @@ def generate_html_from_images(
     input_dir: str, output_html: str, columns: int = 3, max_size: int = 800
 ) -> None:
     """
-    指定したフォルダ内の画像をHTMLに埋め込み、グリッド状に表示する。
+    指定したフォルダ内の画像をHTMLに埋め込み、グリッド状に表示し、クリックでアスペクト比を維持したまま拡大可能にする。
 
     Args:
         input_dir (str): 画像が保存されているディレクトリのパス。
@@ -168,6 +168,11 @@ def generate_html_from_images(
         <html>
         <head>
             <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }}
                 .grid-container {{
                     display: grid;
                     grid-template-columns: repeat({columns}, 1fr);
@@ -178,6 +183,40 @@ def generate_html_from_images(
                     width: 100%;
                     height: auto;
                     border-radius: 5px;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                }}
+                .grid-container img:hover {{
+                    transform: scale(1.05);
+                }}
+                .modal {{
+                    display: none;
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.8);
+                    justify-content: center;
+                    align-items: center;
+                }}
+                .modal img {{
+                    max-width: 90%;
+                    max-height: 90%;
+                    object-fit: contain;  /* 元のアスペクト比を維持して拡大 */
+                    border-radius: 10px;
+                }}
+                .modal:target {{
+                    display: flex;
+                }}
+                .close {{
+                    position: absolute;
+                    top: 10px;
+                    right: 20px;
+                    font-size: 30px;
+                    color: white;
+                    cursor: pointer;
                 }}
             </style>
         </head>
@@ -185,7 +224,7 @@ def generate_html_from_images(
             <div class="grid-container">
         """)
 
-        for img_file in image_list:
+        for idx, img_file in enumerate(image_list):
             img_path: str = os.path.join(input_dir, img_file)
 
             try:
@@ -200,8 +239,16 @@ def generate_html_from_images(
                         "utf-8"
                     )
 
-                    # HTMLにBase64データを書き込む（グリッド要素として追加）
-                    f.write(f'<img src="data:image/webp;base64,{encoded_string}">\n')
+                    # HTMLにBase64データを書き込む（クリックで拡大）
+                    f.write(f"""
+                    <a href="#img{idx}">
+                        <img src="data:image/webp;base64,{encoded_string}" id="thumb{idx}">
+                    </a>
+                    <div id="img{idx}" class="modal">
+                        <a href="#" class="close">&times;</a>
+                        <img src="data:image/webp;base64,{encoded_string}">
+                    </div>
+                    """)
 
             except Exception as e:
                 print(f"エラー（{img_file}）: {e}")
