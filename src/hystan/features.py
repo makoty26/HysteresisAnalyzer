@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from hystan.preprocess import merge_dataframes, interpolate_and_fill
 
+
 def compute_pseudo_area_random_sampling(df_upper, df_lower, y_column) -> float:
     """
     Y 軸の最小値を 0 に正規化し、データ数が少ない側に合わせてランダムサンプリングでデータ数を揃え、
@@ -15,7 +16,6 @@ def compute_pseudo_area_random_sampling(df_upper, df_lower, y_column) -> float:
     Returns:
         float: 2つのグラフの間の面積（擬似的な積算値から求めた面積）。
     """
-    import random
 
     # Y 軸の最小値を取得して正規化
     y_min = min(df_upper[y_column].min(), df_lower[y_column].min())
@@ -30,11 +30,15 @@ def compute_pseudo_area_random_sampling(df_upper, df_lower, y_column) -> float:
     N_min = min(N_upper, N_lower)
 
     if N_upper > N_lower:
-        df_upper_sampled = df_upper_norm.sample(N_min, random_state=42)  # 上側をランダムサンプリング
+        df_upper_sampled = df_upper_norm.sample(
+            N_min, random_state=42
+        )  # 上側をランダムサンプリング
         df_lower_sampled = df_lower_norm
     else:
         df_upper_sampled = df_upper_norm
-        df_lower_sampled = df_lower_norm.sample(N_min, random_state=42)  # 下側をランダムサンプリング
+        df_lower_sampled = df_lower_norm.sample(
+            N_min, random_state=42
+        )  # 下側をランダムサンプリング
 
     # Y値を足し合わせる（擬似的な面積を取得）
     sum_upper = np.sum(df_upper_sampled[y_column])
@@ -44,7 +48,10 @@ def compute_pseudo_area_random_sampling(df_upper, df_lower, y_column) -> float:
     pseudo_area = np.abs(sum_upper - sum_lower)
     return pseudo_area
 
-def compute_change_rate_stats(df: pd.DataFrame, column_name: str) -> tuple[float, float]:
+
+def compute_change_rate_stats(
+    df: pd.DataFrame, column_name: str
+) -> tuple[float, float]:
     """
     データフレームの前の値からの変化率の平均と分散を算出する関数。
 
@@ -64,10 +71,11 @@ def compute_change_rate_stats(df: pd.DataFrame, column_name: str) -> tuple[float
 
     return mean_change_rate, var_change_rate
 
+
 def compute_zero_crossings(df1: pd.DataFrame, df2: pd.DataFrame, y_column: str) -> int:
     """
     df1 と df2 それぞれに対してゼロ交差回数を計算し、その合計を返す関数。
-    
+
     Parameters:
         df1 (DataFrame): 折り返し前のデータ。
         df2 (DataFrame): 折り返し後のデータ。
@@ -76,6 +84,7 @@ def compute_zero_crossings(df1: pd.DataFrame, df2: pd.DataFrame, y_column: str) 
     Returns:
         int: df1 と df2 のゼロ交差回数の合計。
     """
+
     def compute(df):
         zero_crossings = np.where(np.diff(np.sign(df[y_column])))[0]
         return len(zero_crossings)
@@ -88,7 +97,7 @@ def compute_zero_crossings(df1: pd.DataFrame, df2: pd.DataFrame, y_column: str) 
 def compute_range(df1, df2, y_column) -> float:
     """
     df1 と df2 を統合したデータに対して、指定したカラムの範囲（最大値 - 最小値）を計算する関数。
-    
+
     Parameters:
         df1 (DataFrame): 折り返し前のデータ。
         df2 (DataFrame): 折り返し後のデータ。
@@ -99,6 +108,7 @@ def compute_range(df1, df2, y_column) -> float:
     """
     df = merge_dataframes(df1, df2)
     return df[y_column].max() - df[y_column].min()
+
 
 def get_gradient_at_fraction(df, fraction, x_col="H_kOe", y_col="Rh") -> float:
     """
@@ -132,6 +142,7 @@ def get_gradient_at_fraction(df, fraction, x_col="H_kOe", y_col="Rh") -> float:
     # 指定インデックスの勾配を返す
     return float(dy_dx[index])
 
+
 def compute_y_deviation(df1, df2, x_col="H_kOe", y_col="Rh(Ω)", fraction=0.5):
     """
     2つの DataFrame に対し、指定した x 軸の割合における y 値の乖離を算出する関数。
@@ -146,7 +157,7 @@ def compute_y_deviation(df1, df2, x_col="H_kOe", y_col="Rh(Ω)", fraction=0.5):
 
     Returns:
         float: 指定割合の y 値の乖離（絶対値）。
-    """    
+    """
 
     # df1, df2 の補完を実行（元データを上書きしない）
     df1_filled, df2_filled = interpolate_and_fill(df1.copy(), df2.copy(), x_col, y_col)
@@ -163,6 +174,7 @@ def compute_y_deviation(df1, df2, x_col="H_kOe", y_col="Rh(Ω)", fraction=0.5):
     deviation = abs(y_df1 - y_df2)
 
     return float(deviation)
+
 
 def compute_y_ratio(df1, df2, x_col="H_kOe", y_col="Rh(Ω)", fraction=0.5):
     df1_filled, df2_filled = interpolate_and_fill(df1.copy(), df2.copy(), x_col, y_col)

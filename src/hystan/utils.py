@@ -3,12 +3,14 @@ import glob
 from typing import Tuple, Set, Optional
 import re
 
+
 def get_existing_elm_nos(csv_dir: str, max_elm_no=900) -> Tuple[Set[int], Set[int]]:
-    """ 指定ディレクトリ内のCSVファイルから elm_no を取得し、存在しない elm_no を特定する """
+    """指定ディレクトリ内のCSVファイルから elm_no を取得し、存在しない elm_no を特定する"""
     csv_files = glob.glob(os.path.join(csv_dir, "*.csv"))
     elm_nos = {extract_elm_no_from_path(csv_file) for csv_file in csv_files}
     missing_elm_nos = set(range(1, max_elm_no + 1)) - elm_nos
     return elm_nos, missing_elm_nos
+
 
 def extract_elm_no_from_path(file_path: str) -> Optional[int]:
     """

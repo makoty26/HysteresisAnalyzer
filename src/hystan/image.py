@@ -5,22 +5,26 @@ from typing import Tuple, List
 import matplotlib.image as mpimg
 import base64
 import os
-from typing import List
 from PIL import Image
 from io import BytesIO
 
 
 def plot_chart(
-    data_df: pd.DataFrame, x_column: str = "H(kOe)", y_column1: str = "Rh(Ω)", y_column2: str = "dRh/dH(mΩ/Oe)", figsize: Tuple[int, int] = (8, 8), title: str = None
+    data_df: pd.DataFrame,
+    x_column: str = "H(kOe)",
+    y_column1: str = "Rh(Ω)",
+    y_column2: str = "dRh/dH(mΩ/Oe)",
+    figsize: Tuple[int, int] = (8, 8),
+    title: str = None,
 ) -> plt.Figure:
     """
     実験データを基に H(kOe) に対する Rh(Ω) と dRh/dH(mΩ/Oe) のグラフを作成し、Figureオブジェクトを返す。
-    
+
     グラフは以下の構成で描画される：
     - X軸: 磁場 H(kOe)
     - 左Y軸: 抵抗 Rh(Ω)（スチールブルーでプロット）
     - 右Y軸: 抵抗の微分 dRh/dH(mΩ/Oe)（ダークオレンジでプロット）
-    
+
     Args:
         data_df (pd.DataFrame): グラフ作成の元となるデータフレーム。
         x_column (str, optional): X軸のデータ列名（デフォルトは "H(kOe)"）。
@@ -28,7 +32,7 @@ def plot_chart(
         y_column2 (str, optional): 右Y軸のデータ列名（デフォルトは "dRh/dH(mΩ/Oe)"）。
         figsize (Tuple[int, int], optional): グラフのサイズ (幅, 高さ)（デフォルトは (8, 8)）。
         title (str, optional): グラフのタイトル（デフォルトは None）。
-    
+
     Returns:
         plt.Figure: 作成したグラフの Figure オブジェクト。
     """
@@ -138,7 +142,10 @@ def combine_figures(
 
     return combined_fig
 
-def generate_html_from_images(input_dir: str, output_html: str, columns: int = 3, max_size: int = 800) -> None:
+
+def generate_html_from_images(
+    input_dir: str, output_html: str, columns: int = 3, max_size: int = 800
+) -> None:
     """
     指定したフォルダ内の画像をHTMLに埋め込み、グリッド状に表示する。
 
@@ -147,7 +154,7 @@ def generate_html_from_images(input_dir: str, output_html: str, columns: int = 3
         output_html (str): 生成するHTMLファイルのパス。
         columns (int, optional): 1行あたりの画像数（デフォルト: 3）。
         max_size (int, optional): 画像の最大サイズ（デフォルト: 800px）。
-    
+
     Returns:
         None: HTMLファイルを作成するが、戻り値はなし。
     """
@@ -185,11 +192,13 @@ def generate_html_from_images(input_dir: str, output_html: str, columns: int = 3
                 # 画像を開いて縮小処理（メモリ節約）
                 with Image.open(img_path) as img:
                     img.thumbnail((max_size, max_size))  # 指定サイズ以下に縮小
-                    
+
                     # Base64エンコード（メモリに保持しない）
                     buffer = BytesIO()
                     img.save(buffer, format="WEBP", quality=80)  # WebPで軽量化
-                    encoded_string: str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+                    encoded_string: str = base64.b64encode(buffer.getvalue()).decode(
+                        "utf-8"
+                    )
 
                     # HTMLにBase64データを書き込む（グリッド要素として追加）
                     f.write(f'<img src="data:image/webp;base64,{encoded_string}">\n')
